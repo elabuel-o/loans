@@ -28,8 +28,16 @@ names(loansData) <- c("request", "funded", "interest", "months", "purpose",
 library(gsubfn)
 
 ## substring w/ regular expressions:
-interest <- loansData[, 3]
-interest <- strapplyc(interest, "(.*)%", simplify = TRUE)
+interest <- loansData[, 3] ## subsetting
 interest <- as.vector(interest)
+interest <- strapplyc(interest, "(.*)%", simplify = TRUE) ## regexp
 interest <- as.numeric(interest)
-str(interest)
+loansData$interestNum <- interest
+
+debtIncome <- loansData[, 6] ## subsetting
+debtIncome <- as.vector(debtIncome)
+debtIncome <- strapplyc(debtIncome, "(.*)%", simplify = TRUE) ## regexp
+debtIncome <- as.numeric(interest)
+loansData$debtIncomeNum <- debtIncome
+
+fico <- loansData[]
