@@ -6,51 +6,63 @@
 ## Purpose: Cleaning and preparing data for analysis
 ##----------------------------------------------------------------------------
 
-## Loading data frame
+## Loading data frame and random subsetting
 
-load("loansData.rda")
-str(loansData)
+### original data set of 161233 observations
+loansData <- read.csv("LoanStats3c.csv", header = TRUE, skip = 1)
 
-###############################################################################
-## Dataset setup
-names(loansData) <- c("request", "funded", "interest", "months", "purpose",
-                      "debtIncome", "state", "home", "income", "fico", 
-                      "creditLines", "creditBal", "inquiries", "employ")
+### random sample of the original data set
+set.seed(123) ## for reproducibility
+loans <- loansData[sample(1:nrow(loansData), 4529, replace = FALSE), ] 
+names(loans)
+rm(loansData)
 
-### substring character and convert to numeric
-### variables: interest, debtIncome and fico
-library(gsubfn)
+### there are useless variables: let us drop them
+drops <- c("url", "desc", "emp_title", "title")
+loans <- loans[, !(names(loans) %in% drops)]
 
-### substring w/ regular expressions:
-interest <- loansData[, 3] ## subsetting (variable number 3)
-interest <- as.vector(interest)
-interest <- strapplyc(interest, "(.*)%", simplify = TRUE) ## regexp
-interest <- as.numeric(interest)
-loansData$interestNum <- interest
+### variables that are coded as factors ---> numeric and/or character
+loans$int_rate <- as.numeric(gsub("%", "", loans$int_rate))
+loans$revol_util <- as.numeric(gsub("%", "", loans$revol_util))
+loans$state <- loans$addr_state
+loans$state <- as.character(loans$state)
 
-debtIncome <- loansData[, 6] ## subsetting (variable number 6)
-debtIncome <- as.vector(debtIncome)
-debtIncome <- strapplyc(debtIncome, "(.*)%", simplify = TRUE) ## regexp
-debtIncome <- as.numeric(interest)
-loansData$debtIncomeNum <- debtIncome
+## Visualizations (first)
 
-### for FICO rate, we will take two variables (low and high rate)
-fico <- loansData[, 10] ## subsetting (variable number 10)
-fico <- as.vector(fico)
-fico.low <- substr(fico, 1, 3)
-fico.high <- substr(fico, 5, 7)
-ficoLow <- as.numeric(fico.low)
-ficoHigh <- as.numeric(fico.high)
-loansData$ficoLow <- ficoLow
-loansData$ficoHigh <- ficoHigh
+library(ggplot2)
+library(maps)
 
-###############################################################################
+### a choropleth map
+states <- map_data("state") ## geographic data 
+
+### the loans data set contains only state abbreviations
+### let's change abbreviations to full names in order to merge the data frames
+state.names <- unlist(sapply(loans$state, function(x) 
+        if(length(state.name[grep(x, state.abb)]) == 0) "District of Columbia" 
+                             else state.name[grep(x, state.abb)]))
+
+loans$state <- tolower(state.names)
+colnames(loans)[49] <- "region" ## now both data frames have the same var name
+
+
+
 ## Exploratory graphics
 library(ggplot2)
 
+### scatter plots
 ggplot(loansData, aes(x = request, y = funded, 
                       colour = home)) + geom_point()
 
 ggplot(loansData, aes(x = request, y = Amount.Funded.By.Investors, 
                       colour = Loan.Length)) + geom_point()
 
+ggplot(loansData, aes(x = ficoHigh, y = interestNum, 
+                      colour = months)) + geom_point() + 
+  stat_smooth(method = lm, level = 0.99)
+
+### histograms and density plots
+ggplot(loansData, aes(x = interestNum, fill = months)) + 
+  geom_histogram(binwidth = 0.6, position = "identity", alpha = 0.4)
+
+ggplot(loansData, aes(x = interestNum, fill = months)) + 
+  geom_line(stat = "density")
