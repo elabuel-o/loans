@@ -44,9 +44,59 @@ state.names <- unlist(sapply(loans$state, function(x)
 loans$state <- tolower(state.names)
 colnames(loans)[49] <- "region" ## now both data frames have the same var name
 
+### determining number of loans and merging to new data frame with geo data
 
+### merging data frames
+stateLoans <- data.frame(table(loans$region)) ## counting frequencies
+colnames(stateLoans) <- c("region", "numLoans")
+result <- merge(stateLoans, states, by = "region")
+result <- result[order(result$order), ]
 
-## Exploratory graphics
+### map itself (preliminar)
+ggplot(result, aes(x = long, y = lat, group = group, fill = numLoans)) + 
+        geom_polygon(colour = "black") + coord_map("polyconic")
+
+### there's a problem: there are no loans in Idaho, Nebraska, North Dakota,
+### Iowa and Maine. Let's fix the problem
+
+### Idaho
+idaho <- map_data("state")[grep("idaho", map_data("state")[, 5]), ]
+idaho$numLoans <- 1 ## useful for log transformations
+result <- rbind(result, idaho)
+result <- result[order(result$order), ]
+
+### Nebraska
+nebraska <- map_data("state")[grep("nebraska", map_data("state")[, 5]), ]
+nebraska$numLoans <- 1
+result <- rbind(result, nebraska)
+result <- result[order(result$order), ]
+
+### North Dakota
+nd <- map_data("state")[grep("north dakota", map_data("state")[, 5]), ]
+nd$numLoans <- 1
+result <- rbind(result, nd)
+result <- result[order(result$order), ]
+
+### Iowa 
+iowa <- map_data("state")[grep("iowa", map_data("state")[, 5]), ]
+iowa$numLoans <- 1
+result <- rbind(result, iowa)
+result <- result[order(result$order), ]
+
+### Maine
+maine <- map_data("state")[grep("maine", map_data("state")[, 5]), ]
+maine$numLoans <- 1
+result <- rbind(result, maine)
+result <- result[order(result$order), ]
+
+### the map (again)
+ggplot(result, aes(x = long, y = lat, group = group, fill = numLoans)) +
+        geom_polygon(colour = "black") + 
+        scale_fill_gradient(low = "gray85", high = "black", trans = "log") +
+        coord_map("polyconic")
+
+###-----------------------------------------------------------------------------
+## Exploratory graphics (warning: made w/ variables from another data set)
 library(ggplot2)
 
 ### scatter plots
@@ -66,3 +116,5 @@ ggplot(loansData, aes(x = interestNum, fill = months)) +
 
 ggplot(loansData, aes(x = interestNum, fill = months)) + 
   geom_line(stat = "density")
+
+
