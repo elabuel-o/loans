@@ -89,7 +89,7 @@ library(tikzDevice)
 tikz(file = "USmap.tex", standAlone = TRUE)
 ggplot(result, aes(x = long, y = lat, group = group, fill = numLoans)) +
         geom_polygon(colour = "black") + 
-        scale_fill_gradient(low = "gray85", high = "black", trans = "log") +
+        scale_fill_gradient(low = "gray85", high = "black") +
         coord_map("polyconic") + xlab("") + ylab("")
 dev.off()
 
@@ -100,6 +100,10 @@ dev.off()
 ggplot(loansData, aes(x = fico, y = interest, 
                       colour = months)) + 
         geom_point(position = position_jitter(width = 0.7, height = 0.3)) +
+        stat_smooth(method = lm, level = 0.99, fullrange = TRUE)
+
+ggplot(loansData, aes(x = debtIncome, y = interest)) + 
+        geom_point(position = position_jitter(width = 0.7, height = 0.3)) + 
         stat_smooth(method = lm, level = 0.99, fullrange = TRUE)
 
 ### histograms and density plots
@@ -120,5 +124,16 @@ loansData$ordMedian <- with(loansData, reorder(home, funded, median))
 ggplot(loansData, aes(x = ordMedian, y = funded)) + 
         geom_boxplot() +
         geom_point(position = position_jitter(width = 0.25, height = 0.6), 
-                   alpha = 0.5) + 
-        coord_flip()
+                   alpha = 0.5) + coord_flip()
+
+loansData$ordMedian2 <- with(loansData, reorder(purpose, interest, median))
+
+ggplot(loansData, aes(x = ordMedian2, y = interest)) + 
+        geom_boxplot() + 
+        geom_point(position = position_jitter(width = 0.5, height = 0.5), 
+                   alpha = 0.6) + coord_flip()
+
+ggplot(loansData, aes(x = ordMedian, y = interest)) + 
+        geom_boxplot() + 
+        geom_point(position = position_jitter(width = 0.25, height = 0.6), 
+                   alpha = 0.5) + coord_flip()
