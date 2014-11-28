@@ -97,7 +97,6 @@ dev.off()
 ## Exploratory graphics
 
 ### scatter plots
-
 ggplot(loansData, aes(x = fico, y = interest, 
                       colour = months)) + 
         geom_point(position = position_jitter(width = 0.7, height = 0.3)) +
@@ -107,6 +106,19 @@ ggplot(loansData, aes(x = fico, y = interest,
 ggplot(loansData, aes(x = interest, fill = months)) + 
   geom_histogram(binwidth = 0.73, position = "identity", alpha = 0.4)
 
+ggplot(loansData, aes(x = interest, y = ..density..)) + 
+        geom_histogram(binwidth = 0.73, fill = "cornsilk", 
+                       colour = "gray40", size = 0.7) + 
+        geom_density(size = 0.7) + facet_grid(months ~ .)
 
+### boxplots
 
+### reordering by median value
+loansData$ordMedian <- with(loansData, reorder(home, funded, median))
 
+### the boxplot itself
+ggplot(loansData, aes(x = ordMedian, y = funded)) + 
+        geom_boxplot() +
+        geom_point(position = position_jitter(width = 0.25, height = 0.6), 
+                   alpha = 0.5) + 
+        coord_flip()
