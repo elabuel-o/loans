@@ -8,58 +8,48 @@
 
 ##----------------------------------------------------------------------------
 ## Loading data frame and random subsetting
-
-### original data set of 161233 observations
-loansData <- read.csv("LoanStats3c.csv", header = TRUE, skip = 1)
-
-### random sample of the original data set
-set.seed(123) ## for reproducibility
-loans <- loansData[sample(1:nrow(loansData), 4529, replace = FALSE), ] 
-names(loans)
-rm(loansData)
-
-### there are useless variables: let us drop them
-drops <- c("url", "desc", "emp_title", "title")
-loans <- loans[, !(names(loans) %in% drops)]
+load("loansData.rda")
+names(loansData) <- c("request", "funded", "interest", "months", "purpose",
+                      "debtIncome", "state", "home", "income", "fico", 
+                      "creditLines", "creditBal", "inquiries", "employ")
 
 ### variables that are coded as factors ---> numeric and/or character
-loans$int_rate <- as.numeric(gsub("%", "", loans$int_rate))
-loans$revol_util <- as.numeric(gsub("%", "", loans$revol_util))
-loans$state <- loans$addr_state
-loans$state <- as.character(loans$state)
+loansData$interest <- as.numeric(gsub("%", "", loansData$interest))
+loansData$debtIncome <- as.numeric(gsub("%", "", loansData$debtIncome))
+loansData$state <- as.character(loansData$state)
+loansData$fico <- as.numeric(substr(loansData$fico, 1, 3))
 
 ##-----------------------------------------------------------------------------
 ## Map Visualization (first)
-
 library(ggplot2)
 library(maps)
 
-### a choropleth map
-states <- map_data("state") ## geographic data 
+states <- map_data("state")
 
-### the loans data set contains only state abbreviations
+### the loansData dataframe contains only state abbreviations
+### the states dataframe contains the full state names
 ### let's change abbreviations to full names in order to merge the data frames
-state.names <- unlist(sapply(loans$state, function(x) 
+state.names <- unlist(sapply(loansData$state, function(x) 
         if(length(state.name[grep(x, state.abb)]) == 0) "District of Columbia" 
                              else state.name[grep(x, state.abb)]))
 
-loans$state <- tolower(state.names)
-colnames(loans)[49] <- "region" ## now both data frames have the same var name
+loansData$state <- tolower(state.names)
+colnames(loansData)[7] <- "region" ## same names in both data frames
 
 ### determining number of loans and merging to new data frame with geo data
 
 ### merging data frames
-stateLoans <- data.frame(table(loans$region)) ## counting frequencies
+stateLoans <- data.frame(table(loansData$region)) ## counting frequencies
 colnames(stateLoans) <- c("region", "numLoans")
-result <- merge(stateLoans, states, by = "region")
+result <- merge(stateLoans, states)
 result <- result[order(result$order), ]
 
-### map itself (preliminar)
+### the map itself (preliminar)
 ggplot(result, aes(x = long, y = lat, group = group, fill = numLoans)) + 
         geom_polygon(colour = "black") + coord_map("polyconic")
 
 ### there's a problem: there are no loans in Idaho, Nebraska, North Dakota,
-### Iowa and Maine. Let's fix the problem
+### Tennessee and Maine. Let's fix the problem
 
 ### Idaho
 idaho <- map_data("state")[grep("idaho", map_data("state")[, 5]), ]
@@ -79,10 +69,10 @@ nd$numLoans <- 1
 result <- rbind(result, nd)
 result <- result[order(result$order), ]
 
-### Iowa 
-iowa <- map_data("state")[grep("iowa", map_data("state")[, 5]), ]
-iowa$numLoans <- 1
-result <- rbind(result, iowa)
+### Tennessee 
+ten <- map_data("state")[grep("tennessee", map_data("state")[, 5]), ]
+ten$numLoans <- 1
+result <- rbind(result, ten)
 result <- result[order(result$order), ]
 
 ### Maine
@@ -91,14 +81,16 @@ maine$numLoans <- 1
 result <- rbind(result, maine)
 result <- result[order(result$order), ]
 
+## Removing auxiliary objects
+remove(idaho, maine, nd, nebraska, stateLoans, states, ten, state.names)
+
 ### the map (again)
 library(tikzDevice)
 tikz(file = "USmap.tex", standAlone = TRUE)
 ggplot(result, aes(x = long, y = lat, group = group, fill = numLoans)) +
         geom_polygon(colour = "black") + 
         scale_fill_gradient(low = "gray85", high = "black", trans = "log") +
-        coord_map("polyconic") + xlab("") + ylab("") + 
-        labs(fill = "Número de créditos\notorgados (logs)")
+        coord_map("polyconic") + xlab("") + ylab("")
 dev.off()
 
 ##-----------------------------------------------------------------------------
@@ -106,18 +98,15 @@ dev.off()
 
 ### scatter plots
 
-ggplot(loans, aes(x = funded_amnt_inv, y = int_rate, 
-                      colour = term)) + geom_point()
-
-ggplot(loansData, aes(x = ficoHigh, y = interestNum, 
-                      colour = months)) + geom_point() + 
-  stat_smooth(method = lm, level = 0.99)
+ggplot(loansData, aes(x = fico, y = interest, 
+                      colour = months)) + 
+        geom_point(position = position_jitter(width = 0.7, height = 0.3)) +
+        stat_smooth(method = lm, level = 0.99, fullrange = TRUE)
 
 ### histograms and density plots
-ggplot(loansData, aes(x = interestNum, fill = months)) + 
-  geom_histogram(binwidth = 0.6, position = "identity", alpha = 0.4)
+ggplot(loansData, aes(x = interest, fill = months)) + 
+  geom_histogram(binwidth = 0.73, position = "identity", alpha = 0.4)
 
-ggplot(loansData, aes(x = interestNum, fill = months)) + 
-  geom_line(stat = "density")
+
 
 
