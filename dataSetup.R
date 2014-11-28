@@ -6,6 +6,7 @@
 ## Purpose: Cleaning and preparing data for analysis
 ##----------------------------------------------------------------------------
 
+##----------------------------------------------------------------------------
 ## Loading data frame and random subsetting
 
 ### original data set of 161233 observations
@@ -27,7 +28,8 @@ loans$revol_util <- as.numeric(gsub("%", "", loans$revol_util))
 loans$state <- loans$addr_state
 loans$state <- as.character(loans$state)
 
-## Visualizations (first)
+##-----------------------------------------------------------------------------
+## Map Visualization (first)
 
 library(ggplot2)
 library(maps)
@@ -90,21 +92,22 @@ result <- rbind(result, maine)
 result <- result[order(result$order), ]
 
 ### the map (again)
+library(tikzDevice)
+tikz(file = "USmap.tex", standAlone = TRUE)
 ggplot(result, aes(x = long, y = lat, group = group, fill = numLoans)) +
         geom_polygon(colour = "black") + 
         scale_fill_gradient(low = "gray85", high = "black", trans = "log") +
-        coord_map("polyconic")
+        coord_map("polyconic") + xlab("") + ylab("") + 
+        labs(fill = "Número de créditos\notorgados (logs)")
+dev.off()
 
-###-----------------------------------------------------------------------------
-## Exploratory graphics (warning: made w/ variables from another data set)
-library(ggplot2)
+##-----------------------------------------------------------------------------
+## Exploratory graphics
 
 ### scatter plots
-ggplot(loansData, aes(x = request, y = funded, 
-                      colour = home)) + geom_point()
 
-ggplot(loansData, aes(x = request, y = Amount.Funded.By.Investors, 
-                      colour = Loan.Length)) + geom_point()
+ggplot(loans, aes(x = funded_amnt_inv, y = int_rate, 
+                      colour = term)) + geom_point()
 
 ggplot(loansData, aes(x = ficoHigh, y = interestNum, 
                       colour = months)) + geom_point() + 
