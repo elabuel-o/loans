@@ -1,18 +1,28 @@
 
 ## Regression models of Loans data (Lending Club)
+
+## linear model 1: 
 lm1 <- lm(interest ~ fico + log(income) +  months, data = loansData)
 summary(lm1)
 stats1 <- cbind(Estimate = coef(lm1), confint(lm1)) ## stata style matrix
 
+## linear model 2:
 lm2 <- update(lm1, ~. + fico:months + log(income):months)
+summary(lm2)
 stats2 <- cbind(Estimate = coef(lm2), confint(lm2)) ## stata style matrix
 
-lm3 <- update(lm1, ~. -months + debtIncome + purpose)
+lm3 <- update(lm1, ~. -months + debtIncome + home)
 summary(lm3)
 
 lm4 <- update(lm3, ~. -purpose + home)
 summary(lm4)
 
+## Regression Table
+library(stargazer)
+stargazer(lm1, lm2, lm3, align = TRUE)
+
+
+## Analysis not included
 library(car)
 head(Prestige)
 
