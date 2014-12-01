@@ -9,8 +9,10 @@
 \usepackage{dcolumn}
 \geometry{top=3.5cm, bottom=3.5cm, left=3cm, right=3cm}
 
-\title[Finanzas y Desarrollo]
-	  {Peer to peer credits}
+\newtheorem{teo}{Teorema}
+
+\title[Trabajo Final: Créditos Persona a Persona]
+	  {Créditos Persona a Persona. Análisis Económetrico}
 \author{Armando Enríquez Zorrilla}
 \date{}
 \thanks{Clave única: 91621}
@@ -21,4 +23,174 @@
 
 \section{Introducción}
 
+El incremento  de la popularidad del internet en las últimas décadas ha traído como consecuencia la existencia de herramientas y plataformas para facilitar los créditos persona a persona. Por ejemplo, el sitio electrónico de la plataforma \emph{Lending Club} desarrolla un mercado en el cual inversionistas y prestatarios interactúan sin intermediación financiera; dicho sitio electrónico dice pagar rendimientos de manera estable y constante a los inversionistas, además de proveer de un ahorro promedio del 29 por ciento respecto de las tasas de interés del mercado bancario.\footnote{Consultado el 28 de noviembre de 2013 en \url{https://www.lendingclub.com/public/how-peer-lending-works.action}.}
+
+Las implicaciones que tienen plataformas de internet de créditos persona a persona para las microfinanzas y el desarrollo de los agentes es obvia, de ser el caso en el cual se destine crédito a actividades productivas (compra de maquinaria, inversión en negocio), pago de servicios educativos o adquisición de vivienda nueva. 
+
+Si bien el concepto de créditos persona a persona no es nuevo, todo lo contrario, el mercado tradicional de créditos bilaterales sin mediación es muy antiguo (Everett \cite{everett}, Herrero-Lopez \cite{herrero}), el uso de herramientas electrónicas permite a los oferentes y demandantes de recursos disminuir tanto costos como incertidumbre. 
+
+Por otra parte, las herramientas electrónicas de los mercados de crédito persona a persona tienen contribuciones importantes para el análsis estadístico y econométrico, ya que un conjunto de estas plataformas han hecho públicas sus  bases de datos de aplicaciones de crédito y características de los solicitantes de crédito. 
+
+En este sentido, la primera plataforma de créditos persona a persona en hacer públicas sus bases de datos fue \emph{Prosper.com} en 2007, siguiéndole plataformas como \emph{Zopa} y sobretodo \emph{Lending Club}. 
+
+En el presente trabajo se analizarán de manera empírica los determinantes microeconómicos de la tasa de interés en créditos bilaterales de la plataforma \emph{Lending Club}. Ello es relevante en el sentido de que, como se mencionó anteriormente, esta plataforma afirma que, en promedio las tasas de interés de dicho mercado sin intermediarios financieros es menor a las tasas de las instituciones bancarias formales. 
+
+En particular, el presente trabajo intentará determinar qué tanto influyen en el nivel de las tasas de interés medidas tradicionales de medición de riesgo tales como la relación deuda/ingresos y la calificación crediticia, y otros factores microeconómicos que los inversionistas podrían considerar, como el propósito del crédito, los plazos contratados, y los ingresos con los que disponen.
+
+El resto del presente trabajo se divide de la siguiente manera: En la sección 2 se hace una revisión de la literatura de estudios en este tipo de créditos, además de explicar brevemente el funcionamiento de la plataforma \emph{Lending Club}; la sección 3 presenta los datos y la estrategia empírica a desarrollar; la sección 4 introduce estadísticas descriptivas y gráficas exploratorias de la base de datos; la sección 5 presenta los resultados econométricos relevantes y los principales hallazgos; finalmente la sección 6 concluye.
+
+\section{Revisión de literatura y descripión de la plataforma}
+
+\subsection{Literatura relacionada con créditos persona a persona}
+El surgimiento de plataformas electrónicas de créditos persona a persona han detonado el análisis estadístico y econométrico de dichas plataformas de crédito, en varios aspectos como la formación de redes sociales y vínculos entre prestamistas y prestatarios (Ahsta y Assadi \cite{ashta}, Bohme y Potzsch \cite{bohme}, Chen \emph{et al.} \cite{chen}, y Freedman y Jin \cite{freedman}), los determinantes sociodemográficos en el propósito del crédito (Barasinska \cite{bara}, Galloway \cite{galloway}, Greiner y Wang \cite{greiner}, y Herrero-Lopez \emph{et al.} \cite{herreroetal}), competencia en tasas de interés y montos de créditos (Collier y Hampshire \cite{collier}, Frerichs y Schumann \cite{frerichs}, Garman y Hampshire \cite{garman}, Iyer \emph{et al.} \cite{iyer}, y Kumar \cite{kumar}), monitoreo (Lin \cite{lin}, McIntosh \cite{mcintosh}, y Petersen \cite{petersen}) y desarrollo económico (Rumiany \cite{rumiany}, y Theseira \cite{theseira}).
+
+El presente trabajo busca investigar la relación entre el nivel de la tasa de interés y ciertos determinantes, tanto algunos utilizados tradicionalmente en los mercados crediticios (calificación crediticia, razón deuda/ingreso, etc.) como otros que los inversionistas en plataformas de créditos persona a persona pueden valorar, tal como el propósito del crédito. 
+
+\subsection{La plataforma \emph{Lending Club}}
+
+\emph{Lending Club} es una plataforma en internet que atrae inversionistas y prestatarios y facilita los préstamos persona a persona sin requerir de un intermediario financiero. 
+
+Los clientes interesados en solicitar un crédito en \emph{Lending Club} registran sus datos personales y algunos otros, tales como propósito del crédito, ingresos, su tiempo en el actual empleo, la propiedad de su vivienda, y el número de líneas de crédito en instituciones bancarias. 
+
+Posteriormente, la plataforma \emph{Lending Club} hace una evaluación crediticio para cada cliente, calcula algunas variables tales como la razón deuda/ingresos y el balance crediticio, y asigna una tasa de interés recomendada, de acuerdo con el perfil de cada cliente. 
+
+Una vez recolectadas y evaluadas las solicitudes de crédito, \emph{Lending Club} da a conocer una base de datos de las solicitudes a los inversionistas, los cuales escogen a los clientes de acuerdo a la información proporcionada, determinando finalmente la tasa de interés. 
+
+Este proceso se realiza únicamente a través de la plataforma electrónica, por lo que es de esperar que los costos disminuyan respecto de la situación con intermediarios financieros. Cabe destacar que las tasas de interés acordadas entre inversionista y cliente no pueden ser modificadas posteriormente, así como los plazos y términos del crédito. 
+
+En este sentido, resulta interesante preguntarse qué características individuales de los clientes determinan la tasa de interés. Se ahondará más acerca de la estrategia empírica a seguir en la siguiente sección. 
+
+\section{Datos y estrategia empírica}
+
+\subsection{Datos}
+Se utilizará una base de datos representativa de los créditos solicitados de $N = 2,500$ observaciones durante el periodo 2011-2014 en Estados Unidos,  obtenida de \url{http://www.lendingclub.com/}; dicha base de datos contiene variables de características socioeconómicas de los clientes que solicitaron un crédito y les fue otorgado por algún inversionista. Estas variables se describen a continuación. 
+
+\begin{enumerate}
+	\item \emph{request}: Cantidad solicitada.
+	\item \emph{funded}: Cantidad efectivamente otorgada.
+	\item \emph{interest}: Tasa de interés acordada entre inversionista y cliente.
+	\item \emph{months}: Plazo del crédito. Puede ser de 36 o 60 meses. 
+	\item \emph{purpose}: Propósito del crédito, entre los que se encuentran: consolidación de deuda, pago de tarjeta de crédito, negocio, compra de vivienda, compra de automóvil, compra de equipos de energía renovable para la vivienda, gasto educativo y gasto en salud.
+	\item \emph{state}: Estado de Estados Unidos en donde reside el cliente.
+	\item \emph{home}: Propiedad de la vivienda (rentada, hipotecada o propia).
+	\item \emph{income}: Ingreso mensual del cliente.
+	\item \emph{fico}: Calificación crediticia; ronda entre 640 (peor calificación) y 830 (mejor calificación).
+	\item \emph{creditLines}: Líneas de crédito que posee el cliente con instituciones bancarias.
+	\item \emph{creditBal}: El monto total que representan las líneas de crédito que el cliente posee con instituciones bancarias.
+	\item \emph{inquiries}: Número de autorizaciones, por parte del cliente, para consultas respecto de referencias. 
+\end{enumerate}
+
+\subsection{Estrategia empírica}
+Se estimará la Función de Expectativa Condicional (\textsc{cef}, por sus siglas en inglés) la cual relaciona la expectativa de una variable dependiente $y_i$ con un vector fijo de variables $X_i$. Más adelante veremos la conveniencia de utilizar este enfoque econométrico; por el momento, podemos caracterizar la \textsc{cef} con la siguiente ecuación:
+\begin{equation}
+	y_i = E[y_i | X_i] + \varepsilon_i,
+\end{equation}
+donde $\varepsilon_i$ es un término de error que es independiente del vector $X_i$, es decir, $E[\varepsilon_i | X_i] = 0$. 
+
+La propiedad de independencia de $\varepsilon_i$  respecto de $X_i$ es sumamente importante, ya que implica que el término de error no tiene correlacion con ninguna función de $X_i$ (y no solamente con la \textsc{cef}). 
+
+A continuación se expondrá un resultado poderoso que nos servirá de justificación para estimar un modelo lineal en el proceso de investigar los parámetros poblacionales que participan en la determinación de la tasa de interés.\footnote{Para una demostración del resultado, véase el teorema 3.1.4 de Angrist y Pischke \cite{mostly}.}
+
+\begin{teo}
+	Supongamos que la Función de Expectativa Condicional es lineal. Entonces la regresión poblacional asociada a dicha función también es lineal.
+\end{teo}
+
+El resultado anterior nos brinda una justificación poderosa para estimar un modelo de regresión lineal. Más aún, podemos estimar un modelo saturado en el sentido que, al tener variables explicativas discretas, podemos estimar un parámetro para cada una de éstas y su interacción con las variables numéricas continuas. Esta estrategia es la que se utilizará en el presente trabajo para estimar los \emph{efectos principales} de las variables discretas sobre la tasa de interés. 
+
+Finalmente, es importante hacer mención a lo siguiente: para el caso particular del presente trabajo, podemos decir que las variables independientes determinan de manera unívoca a la variable independiente (tasa de interés), es decir, la tasa de interés no determina las características del vector $X_i$, por lo menos no al nivel microeconómico del presente análisis. 
+
+\section{Estadísticas descriptivas}
+
+Como se mencionó anteriormente, la base de datos analizada contempla créditos solicitados y efectivamente otorados para el periodo 2011-2014; estos créditos se otorgan a nivel nacional. La figura \ref{map} muestra (en escala logarítmica) el número de créditos otorgados a nivel estatal. Se observa que la mayoría de los créditos ocurren en California, además de Nueva York, Florida y Texas. Asimismo, observamos el siguiente patrón: los habitantes de los estados del Medio Oeste son los que menos recurren a la plataforma \emph{Lending Club}: en particular, no se registran créditos en Dakota del Norte, Idaho, Iowa y Nebraska.  
+
+\begin{figure}[h!]
+	\includegraphics[width = 15cm, height = 8.5cm]{mapLoans.png}
+	\caption{Créditos otorgados por estado, 2011-2014 (escala logarítmica). \label{map}}
+\end{figure}
+
+Las estadísticas descriptivas de las variables numéricas de la base de datos se muestran en el cuadro \ref{desc}.
+
+\begin{table}[h!]
+	\begin{tabular}{l r r r r}
+		\toprule
+		Variable  &  Mínimo  &  Media  &  Mediana  &  Máximo \\
+		\midrule
+		Préstamo & 2.00 & 12,000 & 10,000 & 35,000 \\ 
+		Tasa de interés & 5.42 & 13.07 & 13.11 & 24.89 \\
+		Relación deuda/ingreso & 0.00 & 15.38 & 15.32 & 34.91 \\
+		Ingreso mensual & 588.5 & 5,689 & 5,000 & 102,800 \\
+		Calificación crediticia & 640 & 706 & 700 & 830 \\ 
+		Líneas de crédito & 2 & 10.8 & 9 & 38 \\
+		Balance de líneas de crédito & 0 & 15,240 & 10,960 & 270,800\\
+		\bottomrule
+		 & & & & 
+	\end{tabular}
+	\caption{Estadísticas descriptivas de las variables numéricas.\label{desc}}
+\end{table}
+
+Resulta natural preguntarnos si la tasa de interés de los créditos otorgados guarda alguna relación con alguna medida tradicional como la razón deuda/ingreso. Podemos darnos una idea de la relación entre ambas variables con la figura \ref{debt-graph}
+
+\begin{figure}[h!]
+	\includegraphics[width = 15cm, height = 8.5cm]{debtIncome.png}
+	\caption{Relación entre la razón deuda/ingreso y la tasa de interés (se muestra línea de ajuste de regresión lineal con intervalo de confianza al 0.99). \label{debt-graph}}
+\end{figure}
+
+Podemos observar de manera gráfica que la relación entre la razón deuda/ingreso y tasa de interés es bastante débil, tal y como podría esperarse en una institución financiera tal como un banco. Ello nos lleva a sospechar que, controlando por otras características microeconómicas,  dicha razón contribuye de manera poco significativa a la determinación de la tasa de interés. 
+
+La figura \ref{interest-histo} nos ayuda a visualizar una característica importante de las tasas de interés: resulta que la distribución de la tasa de interés para los préstamos a 60 meses de plazo son bastante más altas que las tasas para préstamos a 36 meses. Ello puede deberse a la mayor exposición al riesgo percibida por los inversionistas. 
+
+\begin{figure}[h!]
+	\includegraphics[width = 15cm, height = 8.5cm]{histoInt.png}
+	\caption{Histograma de la tasa de interés para cada uno de los plazos (36 y 60 meses). \label{interest-histo}}
+\end{figure}
+
+Cabría preguntarse como varía la tasa de interés para características específicas de la muestra, tales como el propósito del crédito. La figura \ref{purpose} muestra las distribuciones de la tasa de interés condicionadas a dichos propósitos.
+
+\begin{figure}[h!]
+	\includegraphics[width = 15cm, height = 8.5cm]{purpose.png}
+	\caption{Distribución de la tasa de interés por propósito del crédito. Asimimso, se muestran las observaciones para cada una de las categorías. \label{purpose}}
+\end{figure}
+
+La figura \ref{purpose} muestra que la gran mayoría de los préstamos tienen como destino la consolidación de deuda, además de que los clientes con dicho propósito consiguen la tasa de interés con la mediana más alta (en comparación con los demás propósitos). En este mismo sentido, los préstamos con propósitos para mudanza, gastos médicos, tarjetas de crédito, compra de vivienda, y pequeños negocios tienen valores medianos de tasas de interés muy similares y cercanos a los 12.5 por ciento. Por otra parte, los créditos con propósito de mejora de vivienda, compra mayor, compra de automóvil y gastos educativos obtienen valores medianos menores, incluso por debajo del 10 por ciento. 
+
+\section{Resultados econométricos}
+El teorema 1 expuesto en la sección 3 nos brinda un criterio poderoso para estimar un modelo de regresión lineal saturado (es decir, con parámetros para cada variable explicativa discreta y sus interacciones). Por tal motivo, en la presente sección se presentan las estimaciones de diversas especificaciones de controles del siguiente modelo lineal
+\begin{equation}
+y_i = \alpha_i + \gamma z_i + X_i \beta_i + \varepsilon_i, 
+\end{equation} 
+donde $alpha_i$ es el intercepto para el caso base del modelo saturado, $\gamma_i$ es el parámetro asociado a la calificación crediticia $z_i$, $\beta_i$ es el vector de parámetros asociados a los controles y características de la población (incluidas las interacciones de las variables discretas), y $\varepsilon_i$ es el término de error. 
+
+En la figura \ref{estimates} se presentan los coeficientes estimados para cada una de las especificaciones del modelo de regresión lineal.
+
+\begin{figure}[h!]
+	\includegraphics[width = 12cm, height = 15cm]{regTab} \caption{Estimaciones del modelo de regresión lineal. \label{estimates}}
+\end{figure}
+
+Como era de esperarse, observamos un alto nivel de significancia para la calificación crediticia, la cual tiene una relación negativa con la tasa de interés, además de que el parámetro estimado es consisitente para las diversas especificaciones del modelo. En resumen, el parámetro estimado nos indica que un aumento en un punto de la calificación está asociado a una disminución de 8 por ciento en el nivel de la tasa de interés. 
+
+El (logaritmo) del ingreso tiene niveles de significancia estadística similares a los de la calificación crediticia. Es relevante notar que, una vez controlando por la razón deuda/ingreso y la propiedad de la vivienda, el logaritmo del ingreso está asociado a un aumento bastante importante en el nivel de la tasa de interés (aunque con un error estándar mayor que en el caso de las otras especificaciones).
+
+Como habíamos visto anteriormente en el histograma de la tasa de interés condicionado al plazo del crédito, observamos que la diferencia entre el intercepto correspondiente al caso base (36 meses), y el caso de 60 meses: el efecto negativo significativo indica que plazos de 36 meses están asociados a menores tasas de interés \emph{caeteris paribus} que plazos de 60 meses (ver figura \ref{scatter}).
+
+\begin{figure}[h!]
+	\includegraphics[width = 15cm, height = 8.5cm]{scatter.png}
+	\caption{Diferencias en interceptos de la regresión para la tasa de interés, controlando por palzos del crédito. \label{scatter}}
+\end{figure}
+
+Controlando por características individuales, la razón deuda/ingreso tienen una significancia aceptable (al 0.05) y muestra un error estándar pequeño (0.008). Ello sugiere que esta medida tradicional explica en buena medida la determinación de la tasa de interés en créditos persona a persona. 
+
+Por último, observamos los factores de propiedad de la vivienda tienen poca significancia estadística comparado con la segunda especificación del modelo, la cual incluye interacciones para el ingreso y la calificación crediticia con el plazo de los créditos (36 y 60 meses). 
+
+\section{Conclusión}
+El presente trabajo investigó los determinantes de la tasa de interés en créditos persona a persona para la plataforma de interent \emph{Lending Club}, a un nivel de características personales de los clientes.
+
+El área de investigación de este tipo de créditos se relaciona con las microfinanzas y las implicaciones que estos créditos tienen en el desarrollo de los hogares; esto se debe a que, como se observa en la base de datos analizada, los clientes de los créditos destinan éstos, en algunas ocasiones, a inversión en pequeños negocios, gastos médicos, gastos educativos, y mejora de las condiciones de vivienda. 
+
+En particular, los parámetros del modelo estimado sugieren que contratar créditos persona a persona a menores plazos tienen un efecto negativo en el nivel de la tasa de interés que se consigue por parte de los inversionistas. Asimsimo, y a pesar de ser una plataforma sin intermediarios financieros tradicionales, la calificación crediticia y la razón deuda/ingreso tienen un papel estadísticamente significativo en la determiación de las tasas. 
+
+Una investigación posterior podría estudiar la relación entre la descripción del propósito de los créditos por parte de los clientes y la determinación del monto prestado y la tasa de interés obtenida; ello dado que se podría esperar que los inversionistas en este tipo de plataformas valoren cierto tipo de usos para los créditos, dependiendo de las aplicaciones registradas en línea, en cuyo caso los clientes obtendrían tasas de interés más bajas si los inversionistas valoran cierto tipo de propósito (inversión en salud o en educación, por ejemplo). En primera instancia, la estadística descriptiva del presente trabajo (sección 3) sugiere que créditos destinados a mejora de la vivienda, inversión educativa y adquisición de equipos de energía renovable (propósitos ligados al desarrollo de los agentes) obtienen tasas de interés más bajas que otros créditos.
+
+Por otra parte, el uso de plataformas de créditos persona a persona en economías con poca profunidad financiera podría ser una opción interesante para el acceso al crédito de cada vez más personas. Ello es particularmente atractivo dados los niveles de tasas de crédito que no son generalmente más altos que los cobrados por instituciones bancarias establecidas. 
+\bibliographystyle{amsplain}
+\bibliography{lit}
 \end{document}
